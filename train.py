@@ -78,22 +78,25 @@ def train(model, optimizer, lr_scheduler, dataloaders, device, epochs):
             
 
             
-            optimizer_G.zero_grad()
+            
             
             generated_imgs = generator(sampled_latent)
             ge_ = discriminator(generated_imgs)
+            gt_ = discriminator(x)
+
             gen_loss = nn.BCELoss()(ge_, valid)
+            optimizer_G.zero_grad()
             gen_loss.backward()
             optimizer_G.step()
 
-            optimizer_D.zero_grad()
-            gt_ = discriminator(x)
+            
+    
 
             
 
             dis_loss = (nn.BCELoss()(discriminator(generated_imgs.detach()), fake) + nn.BCELoss()(gt_, valid)) / 2
 
-
+            optimizer_D.zero_grad()
             dis_loss.backward()
             optimizer_D.step()
             if lr_scheduler:
@@ -160,7 +163,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 load_checkpoint = False
 mutil_gpu = False
 device_ids = ["cuda:0", "cuda:1"]
-epochs = 300
+epochs = 500
 
 logging.basicConfig(filename="{}.log".format(task_name), level=logging.INFO)
 
@@ -230,8 +233,8 @@ if __name__ == "__main__":
     discriminator = Discriminator(img_size = img_size)
     generator = Generator(latent_dim = latent_dim, output_size = img_size)
 
-    optimizer_G = getattr(optim, optimizer_name)(generator.parameters(), lr=lr, betas = (0.5, 0.999))
-    optimizer_D = getattr(optim, optimizer_name)(discriminator.parameters(), lr=lr, betas = (0.5, 0.999))
+    optimizer_G = getattr(optim, optimizer_name)(generator.parameters(), lr=lr, betas = (0.5, 0.999), weight_decay=weight_decay)
+    optimizer_D = getattr(optim, optimizer_name)(discriminator.parameters(), lr=lr, betas = (0.5, 0.999), weight_decay=weight_decay)
     # lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma) 
     # if load_checkpoint:
     #     load_model("model_checkpoint/check_point.pkl", model, optimizer, lr_scheduler)
