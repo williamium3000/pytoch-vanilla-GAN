@@ -35,7 +35,7 @@ def sample(model, device, epoch):
         sampled_latent = torch.tensor(np.random.normal(0, 1, (16, latent_dim)), dtype=torch.float32)
         sampled_latent = sampled_latent.to(device=device)
             
-        samples = generator(sampled_latent)
+        samples = generator(sampled_latent).cpu().numpy()
         # print(samples)
         fig = plt.figure(figsize=(4, 4))
         gs = gridspec.GridSpec(4, 4)
@@ -158,12 +158,12 @@ lr = 0.0002
 weight_decay = 1e-4
 step_size = 200
 gamma = 0.5
-batch_size = 256
+batch_size = 512
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 load_checkpoint = False
-mutil_gpu = False
+mutil_gpu = True
 device_ids = ["cuda:0", "cuda:1"]
-epochs = 500
+epochs = 1000
 
 logging.basicConfig(filename="{}.log".format(task_name), level=logging.INFO)
 
@@ -254,7 +254,7 @@ if __name__ == "__main__":
             ]
         ))
     dataLoaders = {"train":torch.utils.data.DataLoader(mnist,
-            batch_size=batch_size, shuffle=True, num_workers= 0, pin_memory=True, drop_last=False)}
+            batch_size=batch_size, shuffle=True, num_workers= 8, pin_memory=True, drop_last=False)}
 
 
     train(
