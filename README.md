@@ -24,7 +24,11 @@ We tested on MNIST and CIFAR10. We use Adam with learning rate of 0.0002, a weig
 
 ### MNIST
 The blue line is the generator loss while the red is discriminator loss
+
 ![](images/loss.jpg)
+
 Few of the generated images are as followed:
+
 ![](out/851.png)
+
 ![](out/997.png)
