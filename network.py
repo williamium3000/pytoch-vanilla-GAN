@@ -18,9 +18,7 @@ class Generator(nn.Module):
         super(Generator, self).__init__()
         self.output_size = output_size
         self.layers = nn.Sequential(
-            nn.Linear(latent_dim, 64),
-            nn.LeakyReLU(0.2, inplace=True),
-            nn.Linear(64, 128),
+            nn.Linear(latent_dim, 128),
             nn.BatchNorm1d(128),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Linear(128, 256),
@@ -47,9 +45,7 @@ class Discriminator(nn.Module):
             nn.LeakyReLU(0.2, inplace=True),
             nn.Linear(512, 256),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Linear(256, 128),
-            nn.LeakyReLU(0.2, inplace=True),
-            nn.Linear(128, 1),
+            nn.Linear(256, 1),
             nn.Sigmoid(),
         )
     def forward(self, x):
